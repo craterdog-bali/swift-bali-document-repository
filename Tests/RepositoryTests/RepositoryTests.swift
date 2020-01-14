@@ -1,5 +1,5 @@
 import XCTest
-@testable import swift_bali_document_repository
+@testable import Repository
 
 final class swift_bali_document_repositoryTests: XCTestCase {
     func testExample() {
