@@ -9,13 +9,10 @@ let package = Package(
             name: "Repository",
             targets: ["Repository"]),
     ],
-    dependencies: [
-        .package(url: "https://github.com/swift-aws/aws-sdk-swift", .upToNextMinor(from: "4.0.0"))
-    ],
     targets: [
         .target(
             name: "Repository",
-            dependencies: ["S3", "IAM", "CognitoIdentity"]),
+            dependencies: []),
         .testTarget(
             name: "RepositoryTests",
             dependencies: ["Repository"]),
