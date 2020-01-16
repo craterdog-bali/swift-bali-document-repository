@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "BDN",
+        "repositoryURL": "https://github.com/craterdog-bali/swift-bali-document-notation",
+        "state": {
+          "branch": null,
+          "revision": "0431187231a5471c110b9d14395ecef321ae436e",
+          "version": "2.0.4"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
