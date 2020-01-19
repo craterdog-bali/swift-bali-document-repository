@@ -5,32 +5,34 @@ import BDN
 
 let account = formatter.generateTag()
 let publicKey = formatter.generateKey()
-let signature = formatter.generateSignature()
-let digest = formatter.generateDigest()
-let credentials = Credentials()
-var certificateCitation: Citation?
 
 final class RepositoryTests: XCTestCase {
+    var certificateCitation: Citation?
+
     func testCertificate() {
-        let content = Certificate(publicKey: publicKey)
-        let name = "/bali/demo/certificate"
-        let tag = content.tag
-        let version = content.version
-        let certificate = Document(account: account, content: content, certificate: nil, signature: signature)
+        let signature = formatter.generateSignature()
+        let certificate = Document(account: account, content: Certificate(publicKey: publicKey), signature: signature)
+        let tag = certificate.content.tag
+        let version = certificate.content.version
+        let digest = formatter.generateDigest()
         certificateCitation = Citation(tag: tag, version: version, digest: digest)
+        let credentials = Document(account: account, content: Credentials(), certificate: certificateCitation, signature: signature)
         repository.writeDocument(credentials: credentials, document: certificate)
+        let name = "/bali/test/certificate"
         repository.writeCitation(credentials: credentials, name: name, version: version, citation: certificateCitation!)
     }
 
     func testTransaction() {
-        let content = Transaction(merchant: "Starbucks", amount: "$4.95")
-        let name = "/bali/demo/transaction"
-        let tag = content.tag
-        let version = content.version
-        let transaction = Document(account: account, content: content, certificate: certificateCitation, signature: signature)
-        let citation = Citation(tag: tag, version: version, digest: digest)
+        let signature = formatter.generateSignature()
+        let transaction = Document(account: account, content: Transaction(merchant: "Starbucks", amount: "$4.95"), certificate: certificateCitation, signature: signature)
+        let tag = transaction.content.tag
+        let version = transaction.content.version
+        let digest = formatter.generateDigest()
+        let transactionCitation = Citation(tag: tag, version: version, digest: digest)
+        let credentials = Document(account: account, content: Credentials(), certificate: certificateCitation, signature: signature)
         repository.writeDocument(credentials: credentials, document: transaction)
-        repository.writeCitation(credentials: credentials, name: name, version: version, citation: citation)
+        let name = "/bali/test/transaction"
+        repository.writeCitation(credentials: credentials, name: name, version: version, citation: transactionCitation)
     }
 
     static var allTests = [

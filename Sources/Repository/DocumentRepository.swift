@@ -5,13 +5,13 @@ public class DocumentRepository {
 
     let EOL = "\n"  // the POSIX end of line character
 
-    public func writeCitation(credentials: Credentials, name: String, version: String, citation: Citation) {
+    public func writeCitation(credentials: Document, name: String, version: String, citation: Citation) {
         let credentialsString = "\"\(EOL)" + credentials.format() + "\(EOL)\""
         let body = citation.format()
         sendRequest(credentials: credentialsString, method: "POST", type: "citations", identifier: name, version: version, body: body)
     }
 
-    public func writeDocument(credentials: Credentials, document: Document) {
+    public func writeDocument(credentials: Document, document: Document) {
         let credentialsString = "\"\(EOL)" + credentials.format() + "\(EOL)\""
         let tag = document.content.tag
         let version = document.content.version
