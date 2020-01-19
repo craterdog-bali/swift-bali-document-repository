@@ -3,7 +3,6 @@ import BDN
 
 @testable import Repository
 
-let repository = DocumentRepository()
 let account = formatter.generateTag()
 let publicKey = formatter.generateKey()
 let signature = formatter.generateSignature()
