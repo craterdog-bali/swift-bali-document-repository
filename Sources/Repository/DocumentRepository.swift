@@ -5,10 +5,10 @@ public class DocumentRepository {
 
     let EOL = "\n"  // the POSIX end of line character
 
-    public func writeCitation(credentials: Credentials, name: String, citation: Citation) {
+    public func writeCitation(credentials: Credentials, name: String, version: String, citation: Citation) {
         let credentialsString = "\"\(EOL)" + credentials.format() + "\(EOL)\""
         let body = citation.format()
-        sendRequest(credentials: credentialsString, method: "POST", type: "citations", identifier: name, version: nil, body: body)
+        sendRequest(credentials: credentialsString, method: "POST", type: "citations", identifier: name, version: version, body: body)
     }
 
     public func writeDocument(credentials: Credentials, document: Document) {
@@ -19,14 +19,17 @@ public class DocumentRepository {
         sendRequest(credentials: credentialsString, method: "POST", type: "documents", identifier: tag, version: version, body: body)
     }
 
-    func sendRequest(credentials: String, method: String, type: String, identifier: String, version: String?, body: String?) {
+    func sendRequest(credentials: String, method: String, type: String, identifier: String, version: String, body: String?) {
 
         // setup the request URI
-        let resource = "https://bali-nebula.net/\(type)/\(identifier)" + (version == nil ? "" : "/\(version!)")
+        var identifierString = identifier
+        identifierString.remove(at: identifier.startIndex)
+        let resource = "https://bali-nebula.net/repository/\(type)/\(identifierString)/\(version)"
         guard let url = URL(string: resource) else {
             print("An invalid URL was used: \(resource)")
             return
         }
+        print("\(method): \(resource)")
 
         // encode the credentials
         let allowed = NSMutableCharacterSet.alphanumeric()
@@ -48,9 +51,21 @@ public class DocumentRepository {
         }
 
         // send the request
-        let task = URLSession.shared.dataTask(with: request)
-        task.resume()
-
+        let semaphore = DispatchSemaphore(value: 0)
+        URLSession.shared.dataTask(with: request) { (data, response, error) in
+            let statusCode = (response as! HTTPURLResponse).statusCode
+            guard statusCode < 300 else {
+                print("Error \(statusCode)")
+                semaphore.signal()
+                return
+            }
+            print("Success \(statusCode)")
+            if let data = data {
+                print("\(String(describing: String(data: data, encoding: .utf8)))")
+            }
+            semaphore.signal()
+        }.resume()
+        let _ = semaphore.wait(wallTimeout: .distantFuture)
     }
 
 }
