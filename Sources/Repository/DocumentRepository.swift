@@ -8,7 +8,7 @@ public class DocumentRepository {
     public func writeCitation(credentials: Document, name: String, version: String, citation: Citation) {
         let credentialsString = "\"\(EOL)" + credentials.format() + "\(EOL)\""
         let body = citation.format()
-        sendRequest(credentials: credentialsString, method: "POST", type: "citations", identifier: name, version: version, body: body)
+        sendRequest(credentials: credentialsString, method: "POST", type: "names", identifier: name, version: version, body: body)
     }
 
     public func writeDocument(credentials: Document, document: Document) {
