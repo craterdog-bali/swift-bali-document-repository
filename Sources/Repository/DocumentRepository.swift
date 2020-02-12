@@ -39,15 +39,15 @@ public class DocumentRepository {
         // setup the request content
         var request = URLRequest(url: url)
         request.httpMethod = method
-        request.addValue("ArmorD App/v2 (Swift/v5) Bali Nebula/v2", forHTTPHeaderField: "User-Agent")
-        request.addValue(encodedCredentials, forHTTPHeaderField: "Nebula-Credentials")
-        request.addValue("application/bali", forHTTPHeaderField: "Accept")
+        request.addValue("ArmorD App/v2 (Swift/v5) Bali Nebula/v2", forHTTPHeaderField: "user-agent")
+        request.addValue(encodedCredentials, forHTTPHeaderField: "nebula-credentials")
+        request.addValue("application/bali", forHTTPHeaderField: "accept")
         if body != nil {
             let data = body!.data(using: .utf8)!
             let length = String(data.count)
             request.httpBody = data
-            request.addValue("application/bali", forHTTPHeaderField: "Content-Type")
-            request.addValue(length, forHTTPHeaderField: "Content-Length")
+            request.addValue("application/bali", forHTTPHeaderField: "content-type")
+            request.addValue(length, forHTTPHeaderField: "content-length")
         }
 
         // send the request
