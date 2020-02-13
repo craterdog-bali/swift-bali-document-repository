@@ -17,7 +17,7 @@ final class RepositoryTests: XCTestCase {
         let digest = formatter.generateDigest()
         certificateCitation = Citation(tag: tag, version: version, digest: digest)
         let credentials = Document(account: account, content: Credentials(), certificate: certificateCitation, signature: signature)
-        repository.writeDocument(credentials: credentials, document: certificate)
+        repository.writeDocument(credentials: credentials, digest: digest, document: certificate)
         let name = "/bali/test/certificate"
         repository.writeCitation(credentials: credentials, name: name, version: version, citation: certificateCitation!)
     }
@@ -30,7 +30,7 @@ final class RepositoryTests: XCTestCase {
         let digest = formatter.generateDigest()
         let transactionCitation = Citation(tag: tag, version: version, digest: digest)
         let credentials = Document(account: account, content: Credentials(), certificate: certificateCitation, signature: signature)
-        repository.writeDocument(credentials: credentials, document: transaction)
+        repository.writeDocument(credentials: credentials, digest: digest, document: transaction)
         let name = "/bali/test/transaction"
         repository.writeCitation(credentials: credentials, name: name, version: version, citation: transactionCitation)
     }

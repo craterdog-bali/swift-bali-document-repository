@@ -6,20 +6,20 @@ public class DocumentRepository {
     let EOL = "\n"  // the POSIX end of line character
 
     public func writeCitation(credentials: Document, name: String, version: String, citation: Citation) {
-        let credentialsString = "\"\(EOL)" + credentials.format() + "\(EOL)\""
+        let credentialsString = "\(EOL)" + credentials.format() + "\(EOL)"
         let body = citation.format()
-        sendRequest(credentials: credentialsString, method: "PUT", type: "names", identifier: name, version: version, body: body)
+        sendRequest(credentials: credentialsString, method: "PUT", type: "names", identifier: name, version: version, digest: citation.digest, body: body)
     }
 
-    public func writeDocument(credentials: Document, document: Document) {
-        let credentialsString = "\"\(EOL)" + credentials.format() + "\(EOL)\""
+    public func writeDocument(credentials: Document, digest: [UInt8], document: Document) {
+        let credentialsString = "\(EOL)" + credentials.format() + "\(EOL)"
         let tag = document.content.tag
         let version = document.content.version
         let body = document.format()
-        sendRequest(credentials: credentialsString, method: "PUT", type: "documents", identifier: tag, version: version, body: body)
+        sendRequest(credentials: credentialsString, method: "PUT", type: "documents", identifier: tag, version: version, digest: digest, body: body)
     }
 
-    func sendRequest(credentials: String, method: String, type: String, identifier: String, version: String, body: String?) {
+    func sendRequest(credentials: String, method: String, type: String, identifier: String, version: String, digest: [UInt8], body: String?) {
 
         // setup the request URI
         var identifierString = identifier
@@ -32,15 +32,15 @@ public class DocumentRepository {
         print("\(method): \(resource)")
 
         // encode the credentials
-        let allowed = NSMutableCharacterSet.alphanumeric()
-        allowed.addCharacters(in: ";,/?:@&=+$-_.!~*'()#")
-        let encodedCredentials = credentials.addingPercentEncoding(withAllowedCharacters: allowed as CharacterSet)!
+        let encodedCredentials = formatter.base32Encode(bytes: [UInt8](credentials.utf8))
+        let encodedDigest = formatter.base32Encode(bytes: digest)
 
         // setup the request content
         var request = URLRequest(url: url)
         request.httpMethod = method
         request.addValue("ArmorD App/v2 (Swift/v5) Bali Nebula/v2", forHTTPHeaderField: "user-agent")
         request.addValue(encodedCredentials, forHTTPHeaderField: "nebula-credentials")
+        request.addValue(encodedDigest, forHTTPHeaderField: "nebula-digest")
         request.addValue("application/bali", forHTTPHeaderField: "accept")
         if body != nil {
             let data = body!.data(using: .utf8)!
