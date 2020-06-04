@@ -16,7 +16,7 @@ public class DocumentRepository {
         let tag = document.content.tag
         let version = document.content.version
         let body = document.format()
-        sendRequest(credentials: credentialsString, method: "PUT", type: "documents", identifier: tag, version: version, digest: digest, body: body)
+        sendRequest(credentials: credentialsString, method: "PUT", type: "contracts", identifier: tag, version: version, digest: digest, body: body)
     }
 
     func sendRequest(credentials: String, method: String, type: String, identifier: String, version: String, digest: [UInt8], body: String?) {
